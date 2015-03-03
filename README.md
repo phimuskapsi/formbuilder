@@ -1,6 +1,12 @@
 Formbuilder.js
 ============
 
+#### Update 3/3/2015
+Fixed: Section-Break. Set this up like a text/instruction block that can be added to any form. This adds both Edit/View templates. This was a hack and done without CoffeeScript, just pure JS edit in formbuilder.js. This means that you must currently refer to formbuilder.js in your project. I will make a proper build after I make several other planned changes.
+
+I am also currently working on a separate bit of code for conditional statements culled from generated form elements.
+--@phimuskapsi (Colin Knapp)
+
 #### Update 9/26/14
 
 I'm working on a new version of formbuilder that uses [formrenderer-base](https://github.com/dobtco/formrenderer-base) as a dependency. This will make it so that rendering a form for a user to fill out is as simple as plugging in your data from the builder. It's a bit of a chore to extract this stuff from [Screendoor](http://www.dobt.co/screendoor), but I hope to make some progress in the next month.

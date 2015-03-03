@@ -587,7 +587,8 @@
         MAX: 'field_options.max',
         MINLENGTH: 'field_options.minlength',
         MAXLENGTH: 'field_options.maxlength',
-        LENGTH_UNITS: 'field_options.min_max_length_units'
+        LENGTH_UNITS: 'field_options.min_max_length_units',
+        TEXT_BLOCK: 'text_block'
       },
       dict: {
         ALL_CHANGES_SAVED: 'All changes saved',
@@ -657,7 +658,7 @@
 (function() {
   Formbuilder.registerField('checkboxes', {
     order: 10,
-    view: "<% for (i in (rf.get(Formbuilder.options.mappings.OPTIONS) || [])) { %>\n  <div>\n    <label class='fb-option'>\n      <input type='checkbox' <%= rf.get(Formbuilder.options.mappings.OPTIONS)[i].checked && 'checked' %> onclick=\"javascript: return false;\" />\n      <%= rf.get(Formbuilder.options.mappings.OPTIONS)[i].label %>\n    </label>\n  </div>\n<% } %>\n\n<% if (rf.get(Formbuilder.options.mappings.INCLUDE_OTHER)) { %>\n  <div class='other-option'>\n    <label class='fb-option'>\n      <input type='checkbox' />\n      Other\n    </label>\n\n    <input type='text' />\n  </div>\n<% } %>",
+    view: "<% for (i in (rf.get(Formbuilder.options.mappings.OPTIONS))) { %>\n  <div>\n    <label class='fb-option'>\n      <input type='checkbox' <%= rf.get(Formbuilder.options.mappings.OPTIONS)[i].checked && 'checked' %> onclick=\"javascript: return false;\" />\n      <%= rf.get(Formbuilder.options.mappings.OPTIONS)[i].label %>\n    </label>\n  </div>\n<% } %>\n\n<% if (rf.get(Formbuilder.options.mappings.INCLUDE_OTHER)) { %>\n  <div class='other-option'>\n    <label class='fb-option'>\n      <input type='checkbox' />\n      Other\n    </label>\n\n    <input type='text' />\n  </div>\n<% } %>",
     edit: "<%= Formbuilder.templates['edit/options']({ includeOther: true }) %>",
     addButton: "<span class=\"symbol\"><span class=\"fa fa-square-o\"></span></span> Checkboxes",
     defaultAttributes: function(attrs) {
@@ -774,6 +775,7 @@
           checked: false
         }
       ];
+      attrs.field_options.include_other_option = false;
       return attrs;
     }
   });
@@ -787,6 +789,18 @@
     view: "<label class='section-name'><%= rf.get(Formbuilder.options.mappings.LABEL) %></label>\n<p><%= rf.get(Formbuilder.options.mappings.DESCRIPTION) %></p>",
     edit: "<div class='fb-edit-section-header'>Label</div>\n<input type='text' data-rv-input='model.<%= Formbuilder.options.mappings.LABEL %>' />\n<textarea data-rv-input='model.<%= Formbuilder.options.mappings.DESCRIPTION %>'\n  placeholder='Add a longer description to this field'></textarea>",
     addButton: "<span class='symbol'><span class='fa fa-minus'></span></span> Section Break"
+  });
+
+}).call(this);
+
+(function() {
+  Formbuilder.registerField('text_block', {
+    order: 0,
+    type: 'base_non_input',
+    view: "",
+    edit: "",
+    
+    addButton: "<span class='symbol'><span class='fa fa-minus'></span></span> Text Block"
   });
 
 }).call(this);
@@ -823,6 +837,15 @@
     addButton: "<span class=\"symbol\"><span class=\"fa fa-link\"></span></span> Website"
   });
 
+}).call(this);
+
+(function(){
+	Formbuilder.registerField('ip', {
+		order: 0,
+		view: "<input type='text' class='ipv4' placeholder='8.8.8.8' />",
+		edit: "",
+		addButton: "<span class=\"symbol\"><span class=\"fa fa-desktop\"></span></span> IP Address"
+	});
 }).call(this);
 
 this["Formbuilder"] = this["Formbuilder"] || {};
@@ -863,9 +886,9 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
 __p +=
-((__t = ( Formbuilder.templates['edit/base_header']() )) == null ? '' : __t) +
+((__t = ( Formbuilder.templates['edit/label_description']() )) == null ? '' : __t) +
 '\n' +
-((__t = ( Formbuilder.fields[rf.get(Formbuilder.options.mappings.FIELD_TYPE)].edit({rf: rf}) )) == null ? '' : __t) +
+((__t = ( Formbuilder.templates['edit/tb']() )) == null ? '' : __t) +
 '\n';
 
 }
@@ -921,6 +944,18 @@ __p += '<input type=\'text\' data-rv-input=\'model.' +
 '\' />\n<textarea data-rv-input=\'model.' +
 ((__t = ( Formbuilder.options.mappings.DESCRIPTION )) == null ? '' : __t) +
 '\'\n  placeholder=\'Add a longer description to this field\'></textarea>';
+
+}
+return __p
+};
+
+this["Formbuilder"]["templates"]["edit/tb"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<div class=\'fb-edit-section-header\'>Text Content:</div>\n\n<textarea data-rv-input=\'model.' +
+((__t = ( Formbuilder.options.mappings.TEXT_BLOCK )) == null ? '' : __t) +
+'\'\n  placeholder=\'Add text to the form as a text block\'></textarea>';
 
 }
 return __p
@@ -1122,15 +1157,39 @@ __p += '<div class=\'subtemplate-wrapper\'>\n  <div class=\'cover\'></div>\n  ' 
 return __p
 };
 
-this["Formbuilder"]["templates"]["view/base_non_input"] = function(obj) {
+
+// TODO: Build the non-input
+this["Formbuilder"]["templates"]["view/base_non_input"] = function(obj){
 obj || (obj = {});
 var __t, __p = '', __e = _.escape;
 with (obj) {
-__p += '';
+__p += '<div class=\'subtemplate-wrapper\'>\n  <div class=\'cover\'></div>\n  ' +
+((__t = ( Formbuilder.templates['view/label']({rf: rf}) )) == null ? '' : __t) +
+'\n\n  ' +
+((__t = ( Formbuilder.templates['view/tb']({rf: rf}) )) == null ? '' : __t) +
+'\n\n  ' +
+((__t = ( Formbuilder.templates['view/description']({rf: rf}) )) == null ? '' : __t) +
+'\n  ' +
+((__t = ( Formbuilder.templates['view/duplicate_remove']({rf: rf}) )) == null ? '' : __t) +
+'\n</div>\n';
 
 }
 return __p
 };
+
+
+this["Formbuilder"]["templates"]["view/tb"] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape;
+with (obj) {
+__p += '<p>\n  ' +
+((__t = ( Formbuilder.helpers.simple_format(rf.get(Formbuilder.options.mappings.TEXT_BLOCK)) )) == null ? '' : __t) +
+'\n</p>\n';
+
+}
+return __p
+};
+
 
 this["Formbuilder"]["templates"]["view/description"] = function(obj) {
 obj || (obj = {});
